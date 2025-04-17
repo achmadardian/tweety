@@ -6,9 +6,15 @@ import (
 	"votes/routes"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	// load .env
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("error load .env:", err)
+	}
+
 	// init db
 	DB := config.InitDB()
 
