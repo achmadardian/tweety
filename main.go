@@ -3,11 +3,13 @@ package main
 import (
 	"log"
 	"net/http"
+	"votes/config"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
+	_ = config.InitDB()
 
 	r := gin.Default()
 	r.GET("/", func(c *gin.Context) {
