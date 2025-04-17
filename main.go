@@ -2,20 +2,22 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"votes/config"
+	"votes/routes"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	_ = config.InitDB()
+	// init db
+	DB := config.InitDB()
 
+	// init router
 	r := gin.Default()
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, "ok")
-	})
 
-	log.Printf("server running at http://localhost:8080 port")
+	// init routes
+	routes.InitRoutes(r, DB)
+
+	log.Println("server running at http://localhost:8080")
 	r.Run()
 }
