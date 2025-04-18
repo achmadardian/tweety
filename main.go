@@ -25,5 +25,5 @@ func main() {
 	routes.InitRoutes(r, DB)
 
 	log.Println("server running at http://localhost:8080")
-	r.Run()
+	r.Run(":8080")
 }
