@@ -6,10 +6,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type PaginatedResponse struct {
+	Page     int `json:"page" form:"page"`
+	PageSize int `json:"page_size" form:"page_size"`
+}
+
 type ApiResponse struct {
-	Code    int
-	Message string
-	Data    interface{}
+	Code       int               `json:"code"`
+	Message    string            `json:"message"`
+	Data       interface{}       `json:"data"`
+	Pagination PaginatedResponse `json:"pagination"`
 }
 
 func Ok(c *gin.Context, data interface{}, message ...string) {
@@ -22,6 +28,23 @@ func Ok(c *gin.Context, data interface{}, message ...string) {
 		Code:    http.StatusOK,
 		Message: msg,
 		Data:    data,
+	})
+}
+
+func OkPaginate(c *gin.Context, data interface{}, pagination *PaginatedResponse, message ...string) {
+	msg := "success"
+	if len(message) > 0 {
+		msg = message[0]
+	}
+
+	c.JSON(http.StatusOK, ApiResponse{
+		Code:    http.StatusOK,
+		Message: msg,
+		Data:    data,
+		Pagination: PaginatedResponse{
+			Page:     pagination.Page,
+			PageSize: pagination.PageSize,
+		},
 	})
 }
 
