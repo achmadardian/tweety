@@ -51,9 +51,9 @@ func (u *UserHandler) GetUserAll(c *gin.Context) {
 func (h *UserHandler) CreateUser(c *gin.Context) {
 	var req requests.UserRequest
 
-	if err := c.BindJSON(&req); err != nil {
-		log.Print("[UserHander.CreateUser] invalid payload: ", err)
-		response.BadRequest(c, "invalid payload")
+	if err := c.ShouldBindJSON(&req); err != nil {
+		errFields := utils.ExtractValidationErrors(err)
+		response.UnprocessableEntity(c, errFields)
 		return
 	}
 
