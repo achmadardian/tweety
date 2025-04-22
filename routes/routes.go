@@ -24,6 +24,7 @@ func InitRoutes(r *gin.Engine, DB *config.Database) {
 		users := api.Group("/users")
 		{
 			users.GET("/", userHandler.GetUserAll)
+			users.POST("/", userHandler.CreateUser)
 		}
 	}
 }

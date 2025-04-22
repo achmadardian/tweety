@@ -4,6 +4,7 @@ import (
 	"log"
 	"strings"
 	"votes/repositories"
+	"votes/requests"
 	"votes/response"
 	"votes/utils"
 
@@ -45,4 +46,28 @@ func (u *UserHandler) GetUserAll(c *gin.Context) {
 	}
 
 	response.OkPaginate(c, userMaps, page, "user data")
+}
+
+func (h *UserHandler) CreateUser(c *gin.Context) {
+	var req requests.UserRequest
+
+	if err := c.BindJSON(&req); err != nil {
+		log.Print("[UserHander.CreateUser] invalid payload: ", err)
+		response.BadRequest(c, "invalid payload")
+		return
+	}
+
+	create, err := h.userRepo.Create(&req)
+	if err != nil {
+		log.Printf("[UserHandler.CreateUser] failed to create user: %v", err)
+		response.InternalServerError(c)
+		return
+	}
+
+	res := response.UserResponse{
+		Id:   create.Id,
+		Name: req.Name,
+	}
+
+	response.Created(c, res, "create user data")
 }

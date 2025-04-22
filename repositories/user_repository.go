@@ -3,6 +3,7 @@ package repositories
 import (
 	"votes/config"
 	"votes/models"
+	"votes/requests"
 	"votes/response"
 	"votes/utils"
 
@@ -38,4 +39,19 @@ func (u *UserRepository) GetAll(page *response.PaginatedResponse, keyword string
 	}
 
 	return users, nil
+}
+
+func (u *UserRepository) Create(req *requests.UserRequest) (*models.User, error) {
+	user := models.User{
+		Name:     req.Name,
+		Email:    req.Email,
+		Password: req.Password,
+	}
+
+	query := u.WriteConnection.Create(&user)
+	if query.Error != nil {
+		return nil, query.Error
+	}
+
+	return &user, nil
 }
