@@ -14,7 +14,8 @@ type PaginatedResponse struct {
 type ApiResponse struct {
 	Code       int               `json:"code"`
 	Message    string            `json:"message"`
-	Data       interface{}       `json:"data"`
+	Data       interface{}       `json:"data,omitempty"`
+	Errors     interface{}       `json:"errors,omitempty"`
 	Pagination PaginatedResponse `json:"pagination"`
 }
 
@@ -82,6 +83,19 @@ func BadRequest(c *gin.Context, message ...string) {
 	c.JSON(http.StatusBadRequest, ApiResponse{
 		Code:    http.StatusBadRequest,
 		Message: msg,
+	})
+}
+
+func UnprocessableEntity(c *gin.Context, errors interface{}, message ...string) {
+	msg := "unprocessable entity"
+	if len(message) > 0 {
+		msg = message[0]
+	}
+
+	c.JSON(http.StatusUnprocessableEntity, ApiResponse{
+		Code:    http.StatusUnprocessableEntity,
+		Message: msg,
+		Errors:  errors,
 	})
 }
 
