@@ -55,3 +55,24 @@ func (u *UserRepository) Create(req *requests.UserRequest) (*models.User, error)
 
 	return &user, nil
 }
+
+func (u *UserRepository) GetById(id int) (*models.User, error) {
+	var user models.User
+
+	query := u.WriteConnection.Model(&user).Select("id", "name", "email").First(&user, id)
+	if query.Error != nil {
+		return nil, query.Error
+	}
+
+	return &user, nil
+}
+
+func (u *UserRepository) Update(req *requests.UserRequestUpdate, id int) error {
+	user := models.User{}
+
+	return u.WriteConnection.Model(&user).Where("id = ?", id).Updates(req).Error
+}
+
+func (u *UserRepository) Delete(id int) error {
+	return u.WriteConnection.Delete(&models.User{}, id).Error
+}

@@ -99,6 +99,36 @@ func UnprocessableEntity(c *gin.Context, errors interface{}, message ...string) 
 	})
 }
 
+func UnprocessableEntityEmpty(c *gin.Context, message ...string) {
+	msg := "unprocessable entity"
+	if len(message) > 0 {
+		msg = message[0]
+	}
+
+	c.JSON(http.StatusUnprocessableEntity, ApiResponse{
+		Code:    http.StatusUnprocessableEntity,
+		Message: msg,
+		Errors: map[string]string{
+			"_": "at least one field must be filled",
+		},
+	})
+}
+
+func UnprocessableEntityMalformedJSON(c *gin.Context, message ...string) {
+	msg := "unprocessable entity"
+	if len(message) > 0 {
+		msg = message[0]
+	}
+
+	c.JSON(http.StatusUnprocessableEntity, ApiResponse{
+		Code:    http.StatusUnprocessableEntity,
+		Message: msg,
+		Errors: map[string]string{
+			"body": "invalid or malformed JSON",
+		},
+	})
+}
+
 func NotFound(c *gin.Context, message ...string) {
 	msg := "not found"
 	if len(message) > 0 {
