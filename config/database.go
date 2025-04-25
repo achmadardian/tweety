@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -14,8 +15,16 @@ type Database struct {
 }
 
 func InitDB() *Database {
-	dsn := os.Getenv("DB_DSN")
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	dbUser := os.Getenv("DB_USER")
+	dbPassword := os.Getenv("DB_PASSWORD")
+	dbHost := os.Getenv("DB_HOST")
+	dbPort := os.Getenv("DB_PORT")
+	dbName := os.Getenv("DB_NAME")
+
+	// Build the DSN (Data Source Name) string
+	Dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", dbUser, dbPassword, dbHost, dbPort, dbName)
+
+	db, err := gorm.Open(mysql.Open(Dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("error initialize database: ", err)
 	}
