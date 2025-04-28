@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -29,6 +30,20 @@ func InitDB() *Database {
 		log.Fatal("error initialize database: ", err)
 	}
 	log.Print("success initialize database")
+
+	sqlDB, err := db.DB()
+	if err != nil {
+		log.Fatal("error get raw connection database: ", err)
+	}
+
+	// SetMaxIdleConns sets the maximum number of connections in the idle connection pool.
+	sqlDB.SetMaxIdleConns(10)
+
+	// SetMaxOpenConns sets the maximum number of open connections to the database.
+	sqlDB.SetMaxOpenConns(100)
+
+	// SetConnMaxLifetime sets the maximum amount of time a connection may be reused.
+	sqlDB.SetConnMaxLifetime(time.Hour)
 
 	return &Database{
 		WriteConnection: db,
