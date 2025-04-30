@@ -1,34 +1,25 @@
 services:
   db:
-    image: mysql:8.4
-    container_name: mysql-db
+    image: postgres:17.4
+    container_name: pgsql-db
     environment:
-      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
-      - MYSQL_DATABASE=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
     command: --max_connections=200
     ports:
-      - "3306:3306"
+      - "5432:5432"
     networks:
       - app-network
     healthcheck:
-      test:
-        [
-          "CMD",
-          "mysqladmin",
-          "ping",
-          "-h",
-          "localhost",
-          "-u",
-          "root",
-          "-p${DB_PASSWORD}",
-        ]
+      test: ["CMD", "pg_isready", "-U", "postgres"]
       start_period: 5s
       interval: 5s
       timeout: 5s
       retries: 5
     restart: unless-stopped
     volumes:
-      - "mysql-data:/var/lib/mysql"
+      - "pgsql-data:/var/lib/postgresql/data"
     deploy:
       resources:
         limits:
@@ -55,6 +46,12 @@ services:
     networks:
       - app-network
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/"]
+      start_period: 5s
+      interval: 5s
+      timeout: 5s
+      retries: 5
     deploy:
       resources:
         limits:
@@ -64,9 +61,22 @@ services:
           cpus: 0.25
           memory: 512M
 
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: nginx
+    networks:
+      - app-network
+    depends_on:
+      - go-app
+    ports:
+      - "443:443"
+      - "80:80"
+
 networks:
   app-network:
     driver: bridge
 
 volumes:
-  mysql-data:
+  pgsql-data:
