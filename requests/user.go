@@ -1,5 +1,7 @@
 package requests
 
+import "time"
+
 type UserRequest struct {
 	Name     string `json:"name" binding:"required"`
 	Email    string `json:"email" binding:"required"`
@@ -7,9 +9,10 @@ type UserRequest struct {
 }
 
 type UserRequestUpdate struct {
-	Name     string `json:"name,omitempty"`
-	Email    string `json:"email,omitempty"`
-	Password string `json:"password,omitempty"`
+	Name      string `json:"name,omitempty"`
+	Email     string `json:"email,omitempty"`
+	Password  string `json:"password,omitempty"`
+	UpdatedAt time.Time
 }
 
 func (u *UserRequestUpdate) IsEmpty() bool {
