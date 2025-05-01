@@ -14,6 +14,5 @@ FROM alpine:3.21.3
 
 WORKDIR /app
 COPY --from=builder /app/myapp .
-COPY .env .env
 
 CMD [ "./myapp" ]  
