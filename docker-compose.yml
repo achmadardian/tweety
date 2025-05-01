@@ -29,8 +29,7 @@ services:
           cpus: 0.5
           memory: 512M
   go-app:
-    build:
-      context: .
+    image: achmadardian/votes-go-app:latest
     container_name: go-app
     ports:
       - "8080:8080"
