@@ -1,0 +1,24 @@
+# docker compose files
+docker-compose.yml
+docker-compose.override.yml
+
+# readme and docs
+README.md
+*.md
+
+# init scripts
+initdb/
+
+# version control and editor files
+.git
+.gitignore
+*.swp
+
+# nginx
+nginx/
+
+# migrations
+db/
+
+# env
+.env
