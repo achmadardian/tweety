@@ -1,4 +1,4 @@
 .env
 nginx
 docker-compose.yml
-initdb
+initdb/init.sql
