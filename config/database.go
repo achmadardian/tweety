@@ -16,10 +16,10 @@ type Database struct {
 }
 
 func InitDB() *Database {
-	dbUser := os.Getenv("DB_USER")
-	dbPassword := os.Getenv("DB_PASSWORD")
-	dbHost := os.Getenv("DB_HOST")
-	dbPort := os.Getenv("DB_PORT")
+	dbUser := os.Getenv("APP_DB_USER")
+	dbPassword := os.Getenv("APP_DB_PASSWORD")
+	dbHost := os.Getenv("APP_DB_HOST")
+	dbPort := os.Getenv("APP_DB_PORT")
 	dbName := os.Getenv("DB_NAME")
 
 	// Build the DSN (Data Source Name) string
