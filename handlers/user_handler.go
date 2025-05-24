@@ -57,7 +57,7 @@ func (u *UserHandler) GetUserAll(c *gin.Context) {
 }
 
 func (h *UserHandler) CreateUser(c *gin.Context) {
-	var req requests.UserRequest
+	var req requests.CreatUserRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		errFields := utils.ExtractValidationErrors(err)
@@ -124,7 +124,7 @@ func (h *UserHandler) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	var req requests.UserRequestUpdate
+	var req requests.UserUpdateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		log.Printf("[UserHandler.UpdateUser] invalid request body: %v", err)
 		response.UnprocessableEntityMalformedJSON(c)

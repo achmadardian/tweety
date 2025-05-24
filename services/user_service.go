@@ -33,7 +33,7 @@ func (u *UserService) GetAll(page *response.PaginatedResponse, keyword string) (
 	return users, nil
 }
 
-func (u *UserService) Create(req *requests.UserRequest) (*models.User, error) {
+func (u *UserService) Create(req *requests.CreatUserRequest) (*models.User, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return nil, fmt.Errorf("hashed password: %w", err)
@@ -87,13 +87,19 @@ func (u *UserService) GetByEmail(email string) (*models.User, error) {
 	return user, err
 }
 
-func (u *UserService) Update(req *requests.UserRequestUpdate, id uuid.UUID) error {
+func (u *UserService) Update(req *requests.UserUpdateRequest, id uuid.UUID) error {
 	_, err := u.userRepo.GetById(id)
 	if err != nil {
 		return err
 	}
 
-	if err = u.userRepo.Update(req, id); err != nil {
+	update := &models.User{
+		Name:     req.Name,
+		Email:    req.Email,
+		Password: req.Password,
+	}
+
+	if err = u.userRepo.Update(update, id); err != nil {
 		return fmt.Errorf("update user: %w", err)
 	}
 
@@ -107,7 +113,7 @@ func (u *UserService) Delete(id uuid.UUID) error {
 	}
 
 	if err := u.userRepo.Delete(id); err != nil {
-		return fmt.Errorf("delete user: %", err)
+		return fmt.Errorf("delete user: %w", err)
 	}
 
 	return nil

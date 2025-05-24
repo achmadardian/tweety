@@ -4,7 +4,6 @@ import (
 	"errors"
 	"votes/config"
 	"votes/models"
-	"votes/requests"
 	"votes/response"
 	"votes/utils"
 
@@ -82,10 +81,8 @@ func (u *UserRepository) GetByEmail(email string) (*models.User, error) {
 	return &user, nil
 }
 
-func (u *UserRepository) Update(req *requests.UserRequestUpdate, id uuid.UUID) error {
-	user := models.User{}
-
-	return u.WriteConnection.Model(&user).Where("id = ?", id).Updates(req).Error
+func (u *UserRepository) Update(user *models.User, id uuid.UUID) error {
+	return u.WriteConnection.Where("id = ?", id).Updates(user).Error
 }
 
 func (u *UserRepository) Delete(id uuid.UUID) error {
