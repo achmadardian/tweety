@@ -1,12 +1,14 @@
 package repositories
 
 import (
+	"errors"
 	"votes/config"
 	"votes/models"
 	"votes/requests"
 	"votes/response"
 	"votes/utils"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -25,7 +27,7 @@ func NewUserRepository(DB *config.Database) *UserRepository {
 func (u *UserRepository) GetAll(page *response.PaginatedResponse, keyword string) ([]models.User, error) {
 	var users []models.User
 
-	query := u.ReadConnection.Model(&models.User{}).
+	query := u.ReadConnection.
 		Select("id", "name", "email").
 		Scopes(utils.Paginate(page.Page, page.PageSize)).
 		Order("id DESC")
@@ -41,38 +43,51 @@ func (u *UserRepository) GetAll(page *response.PaginatedResponse, keyword string
 	return users, nil
 }
 
-func (u *UserRepository) Create(req *requests.UserRequest) (*models.User, error) {
-	user := models.User{
-		Name:     req.Name,
-		Email:    req.Email,
-		Password: req.Password,
-	}
-
+func (u *UserRepository) Create(user *models.User) (*models.User, error) {
 	query := u.WriteConnection.Create(&user)
 	if query.Error != nil {
 		return nil, query.Error
 	}
 
-	return &user, nil
+	return user, nil
 }
 
-func (u *UserRepository) GetById(id int) (*models.User, error) {
+func (u *UserRepository) GetById(id uuid.UUID) (*models.User, error) {
 	var user models.User
 
-	query := u.WriteConnection.Model(&user).Select("id", "name", "email").First(&user, id)
-	if query.Error != nil {
-		return nil, query.Error
+	err := u.WriteConnection.Select("id", "name", "email").First(&user, id).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, gorm.ErrRecordNotFound
+		}
+
+		return nil, err
 	}
 
 	return &user, nil
 }
 
-func (u *UserRepository) Update(req *requests.UserRequestUpdate, id int) error {
+func (u *UserRepository) GetByEmail(email string) (*models.User, error) {
+	var user models.User
+
+	err := u.WriteConnection.Select("id", "name", "email").Where("email = ?", email).First(&user).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, gorm.ErrRecordNotFound
+		}
+
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+func (u *UserRepository) Update(req *requests.UserRequestUpdate, id uuid.UUID) error {
 	user := models.User{}
 
 	return u.WriteConnection.Model(&user).Where("id = ?", id).Updates(req).Error
 }
 
-func (u *UserRepository) Delete(id int) error {
+func (u *UserRepository) Delete(id uuid.UUID) error {
 	return u.WriteConnection.Delete(&models.User{}, id).Error
 }

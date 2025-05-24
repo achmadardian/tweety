@@ -3,15 +3,16 @@ package handlers
 import (
 	"errors"
 	"log"
-	"strconv"
 	"strings"
 	"votes/repositories"
 	"votes/requests"
 	"votes/response"
 	"votes/services"
 	"votes/utils"
+	"votes/utils/errs"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -38,7 +39,7 @@ func (u *UserHandler) GetUserAll(c *gin.Context) {
 	keyword = strings.TrimSpace(keyword)
 	users, err := u.userService.GetAll(page, keyword)
 	if err != nil {
-		log.Printf("[UserHandler.GetUserAll] failed to get user data: %v", err)
+		log.Printf("[UserHandler.GetUserAll] failed to fetch user data: %v", err)
 		response.InternalServerError(c)
 		return
 	}
@@ -66,6 +67,11 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 
 	create, err := h.userService.Create(&req)
 	if err != nil {
+		if errors.Is(err, errs.ErrEmailAlreadyExist) {
+			response.UnprocessableEntity(c, gin.H{"email": errs.ErrEmailAlreadyExist.Error()})
+			return
+		}
+
 		log.Printf("[UserHandler.CreateUser] failed to create user: %v", err)
 		response.InternalServerError(c)
 		return
@@ -81,16 +87,16 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 
 func (h *UserHandler) GetUserById(c *gin.Context) {
 	id := c.Param("id")
-	convId, err := strconv.Atoi(id)
+	parseId, err := uuid.Parse(id)
 	if err != nil {
-		log.Printf("[UserHandler.GetUserById] invalid userId param: %v", err)
+		log.Printf("[UserHandler.GetUserById] invalid parse userid: %v", err)
 		response.BadRequest(c, "invalid user id")
 		return
 	}
 
-	user, err := h.userService.GetById(convId)
+	user, err := h.userService.GetById(parseId)
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
+		if errors.Is(err, errs.ErrDataNotFound) {
 			response.NotFound(c, "user not found")
 			return
 		}
@@ -111,9 +117,9 @@ func (h *UserHandler) GetUserById(c *gin.Context) {
 
 func (h *UserHandler) UpdateUser(c *gin.Context) {
 	idUser := c.Param("id")
-	convId, err := strconv.Atoi(idUser)
+	parseId, err := uuid.Parse(idUser)
 	if err != nil {
-		log.Printf("[UserHandler.UpdateUser] invalid userId param: %v", err)
+		log.Printf("[UserHandler.UpdateUser] failed to parse userId param: %v", err)
 		response.BadRequest(c, "invalid user id")
 		return
 	}
@@ -131,8 +137,8 @@ func (h *UserHandler) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	if err = h.userService.Update(&req, convId); err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
+	if err = h.userService.Update(&req, parseId); err != nil {
+		if errors.Is(err, errs.ErrDataNotFound) {
 			response.NotFound(c, "user not found")
 			return
 		}
@@ -152,14 +158,14 @@ func (h *UserHandler) UpdateUser(c *gin.Context) {
 
 func (h *UserHandler) DeleteUser(c *gin.Context) {
 	idUser := c.Param("id")
-	convId, err := strconv.Atoi(idUser)
+	parseId, err := uuid.Parse(idUser)
 	if err != nil {
-		log.Printf("[UserHandler.UpdateUser] invalid userId param: %v", err)
+		log.Printf("[UserHandler.UpdateUser] error parse userId param: %v", err)
 		response.BadRequest(c, "invalid user id")
 		return
 	}
 
-	if err = h.userService.Delete(convId); err != nil {
+	if err = h.userService.Delete(parseId); err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			response.NotFound(c, "user not found")
 			return

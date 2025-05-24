@@ -1,11 +1,15 @@
 package response
 
-import "votes/models"
+import (
+	"votes/models"
+
+	"github.com/google/uuid"
+)
 
 type UserResponse struct {
-	Id    uint   `json:"id"`
-	Name  string `json:"name"`
-	Email string `json:"email"`
+	Id    uuid.UUID `json:"id"`
+	Name  string    `json:"name"`
+	Email string    `json:"email"`
 }
 
 type UserResponseUpdate struct {
