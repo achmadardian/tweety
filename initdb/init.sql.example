@@ -1,6 +1,6 @@
 -- app
 CREATE USER app WITH PASSWORD 'password';
-GRANT CONNECT ON DATABASE ewallet TO app;
+GRANT CONNECT ON DATABASE user TO app;
 GRANT USAGE ON SCHEMA public TO app;
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO app;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public
@@ -8,11 +8,11 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO app;
 
 -- migration
 CREATE USER migration WITH PASSWORD 'password';
-GRANT CONNECT ON DATABASE ewallet TO migration;
+GRANT CONNECT ON DATABASE user TO migration;
 GRANT USAGE ON SCHEMA public TO migration;
 GRANT CREATE ON SCHEMA public TO migration;
 
 -- assign tables for app from migration
-\c ewallet migration
+\c user migration
 ALTER DEFAULT PRIVILEGES IN SCHEMA public
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO app;
