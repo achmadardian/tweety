@@ -11,43 +11,30 @@ import (
 )
 
 type Database struct {
-	WriteConnection *gorm.DB
-	ReadConnection  *gorm.DB
+	*gorm.DB
 }
 
 func InitDB() *Database {
-	dbUser := os.Getenv("APP_DB_USER")
-	dbPassword := os.Getenv("APP_DB_PASSWORD")
 	dbHost := os.Getenv("APP_DB_HOST")
-	dbPort := os.Getenv("APP_DB_PORT")
+	dbUser := os.Getenv("APP_DB_USER")
+	dbPass := os.Getenv("APP_DB_PASSWORD")
 	dbName := os.Getenv("DB_NAME")
+	dbPort := os.Getenv("APP_DB_PORT")
 
-	// Build the DSN (Data Source Name) string
-	//Dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", dbUser, dbPassword, dbHost, dbPort, dbName)
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Shanghai", dbHost, dbUser, dbPassword, dbName, dbPort)
-
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=UTC", dbHost, dbUser, dbPass, dbName, dbPort)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatal("error initialize database: ", err)
+		log.Fatalf("failed to connect database: %s", err)
 	}
-	log.Print("success initialize database")
 
 	sqlDB, err := db.DB()
 	if err != nil {
-		log.Fatal("error get raw connection database: ", err)
+		log.Fatalf("failed to get raw database: %s", err)
 	}
 
-	// SetMaxIdleConns sets the maximum number of connections in the idle connection pool.
 	sqlDB.SetMaxIdleConns(10)
-
-	// SetMaxOpenConns sets the maximum number of open connections to the database.
 	sqlDB.SetMaxOpenConns(100)
-
-	// SetConnMaxLifetime sets the maximum amount of time a connection may be reused.
 	sqlDB.SetConnMaxLifetime(time.Hour)
 
-	return &Database{
-		WriteConnection: db,
-		ReadConnection:  db,
-	}
+	return &Database{DB: db}
 }
