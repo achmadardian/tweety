@@ -58,3 +58,32 @@ func (a *AuthHandler) Register(c *gin.Context) {
 
 	responses.Created(c, res)
 }
+
+func (a *AuthHandler) Login(c *gin.Context) {
+	var req requests.LoginRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		errVal := validate.ExtractValidationErrors(req, err)
+		responses.UnprocessableEntity(c, errVal)
+		return
+	}
+
+	acc, ref, err := a.authSvc.Login(&req)
+	if err != nil {
+		if errors.Is(err, errs.ErrInvalidLogin) {
+			responses.Unauthorized(c, errs.ErrInvalidLogin.Error())
+			return
+		}
+
+		log.Printf("failed to login: %s", err)
+		responses.InternalServerError(c)
+		return
+	}
+
+	res := responses.LoginResponse{
+		AccessToken:  acc,
+		RefreshToken: ref,
+	}
+
+	responses.Ok(c, res)
+}
