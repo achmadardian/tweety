@@ -4,7 +4,7 @@ import (
 	"log"
 	"votes/config"
 	"votes/routes"
-	"votes/utils"
+	"votes/utils/validate"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -23,7 +23,7 @@ func main() {
 	r := gin.Default()
 
 	// init translation validator
-	utils.InitTransValidator()
+	validate.InitTranslator()
 
 	// init routes
 	routes.InitRoutes(r, DB)
