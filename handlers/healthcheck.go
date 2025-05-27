@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"votes/response"
+	"votes/responses"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,5 +13,5 @@ func NewHealthcheck() *Healthcheck {
 }
 
 func (h *Healthcheck) GetHealth(c *gin.Context) {
-	response.Ok(c, "app is running well")
+	responses.Ok(c, "app is running well")
 }
