@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"errors"
-	"log"
 	"votes/requests"
 	"votes/responses"
 	"votes/services"
@@ -10,6 +9,7 @@ import (
 	"votes/utils/validate"
 
 	"github.com/gin-gonic/gin"
+	"github.com/rs/zerolog"
 )
 
 type AuthHandler struct {
@@ -23,6 +23,8 @@ func NewAuthHandler(authSvc *services.AuthService) *AuthHandler {
 }
 
 func (a *AuthHandler) Register(c *gin.Context) {
+	z := zerolog.Ctx(c.Request.Context())
+
 	var req requests.RegisterRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -34,16 +36,32 @@ func (a *AuthHandler) Register(c *gin.Context) {
 	register, err := a.authSvc.Register(&req)
 	if err != nil {
 		if errors.Is(err, errs.ErrEmailAlreadyExist) {
+			z.Warn().
+				Str("event", "auth.register").
+				Str("email", req.Email).
+				Msg("failed to register: email already exist")
+
 			responses.UnprocessableEntity(c, gin.H{"email": errs.ErrEmailAlreadyExist.Error()})
 			return
 		}
 
 		if errors.Is(err, errs.ErrUsernameAlreadyExist) {
+			z.Warn().
+				Str("event", "auth.register").
+				Str("username", req.Username).
+				Msg("failed to register: username already exist")
+
 			responses.UnprocessableEntity(c, gin.H{"username": errs.ErrUsernameAlreadyExist.Error()})
 			return
 		}
 
-		log.Printf("failed to register new user: %s", err)
+		z.Error().
+			Str("event", "auth.register").
+			Str("email", req.Email).
+			Str("username", req.Username).
+			Err(err).
+			Msg("failed to register")
+
 		responses.InternalServerError(c)
 		return
 	}
@@ -60,6 +78,8 @@ func (a *AuthHandler) Register(c *gin.Context) {
 }
 
 func (a *AuthHandler) Login(c *gin.Context) {
+	z := zerolog.Ctx(c.Request.Context())
+
 	var req requests.LoginRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -71,11 +91,21 @@ func (a *AuthHandler) Login(c *gin.Context) {
 	acc, ref, err := a.authSvc.Login(&req)
 	if err != nil {
 		if errors.Is(err, errs.ErrInvalidLogin) {
+			z.Warn().
+				Str("event", "auth.login").
+				Str("email", req.Email).
+				Msg("failed to login: invalid credential")
+
 			responses.Unauthorized(c, errs.ErrInvalidLogin.Error())
 			return
 		}
 
-		log.Printf("failed to login: %s", err)
+		z.Error().
+			Str("event", "auth.login").
+			Str("email", req.Email).
+			Err(err).
+			Msg("failed to login")
+
 		responses.InternalServerError(c)
 		return
 	}
