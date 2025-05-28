@@ -3,6 +3,7 @@ package routes
 import (
 	"votes/config"
 	"votes/handlers"
+	"votes/middlewares"
 	"votes/repositories"
 	"votes/services"
 
@@ -24,6 +25,10 @@ func InitRoutes(r *gin.Engine, DB *config.Database) {
 	// routes
 	api := r.Group("api")
 	{
+		// middleware
+		// logger
+		api.Use(middlewares.Logger())
+
 		// healthcheck
 		api.GET("/", healthcheckHandler.GetHealth)
 
