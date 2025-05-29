@@ -71,3 +71,16 @@ func (u *UserService) GetByUsername(username string) (*models.User, error) {
 
 	return user, nil
 }
+
+func (u *UserService) GetById(userId uuid.UUID) (*models.User, error) {
+	user, err := u.repo.GetById(userId)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errs.ErrDataNotFound
+		}
+
+		return nil, fmt.Errorf("get user by id: %w", err)
+	}
+
+	return user, nil
+}

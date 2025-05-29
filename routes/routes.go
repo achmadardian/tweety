@@ -17,6 +17,7 @@ func InitRoutes(r *gin.Engine, DB *config.Database) {
 	// user
 	userRepo := repositories.NewUserRepository(DB)
 	userSvc := services.NewUserService(userRepo)
+	userHandl := handlers.NewUserHandler(userSvc)
 
 	// auth
 	authSvc := services.NewAuthService(userSvc)
@@ -37,6 +38,12 @@ func InitRoutes(r *gin.Engine, DB *config.Database) {
 		{
 			auth.POST("/register", authHandl.Register)
 			auth.POST("/login", authHandl.Login)
+		}
+
+		// user
+		user := api.Group("/users")
+		{
+			user.GET("/me", userHandl.Me)
 		}
 	}
 }

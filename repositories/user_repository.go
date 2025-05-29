@@ -5,6 +5,7 @@ import (
 	"votes/config"
 	"votes/models"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -46,6 +47,21 @@ func (u *UserRepository) GetByUsername(username string) (*models.User, error) {
 	var user models.User
 
 	err := u.db.Select("id, first_name, last_name, username, email").Where("username = ?", username).First(&user).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, gorm.ErrRecordNotFound
+		}
+
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+func (u *UserRepository) GetById(userId uuid.UUID) (*models.User, error) {
+	var user models.User
+
+	err := u.db.Select("id, first_name, last_name, username, email").First(&user, userId).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, gorm.ErrRecordNotFound
