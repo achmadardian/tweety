@@ -119,3 +119,19 @@ func (a *AuthService) Login(req *requests.LoginRequest) (string, string, error) 
 
 	return accToken, refToken, nil
 }
+
+func (a *AuthService) ValidateToken(accessToken string) (*Claim, error) {
+	token, err := jwt.ParseWithClaims(accessToken, &Claim{}, func(token *jwt.Token) (interface{}, error) {
+		return SecretKey, nil
+	}, jwt.WithLeeway(5*time.Second))
+	if err != nil {
+		return &Claim{}, errs.ErrInvalidToken
+	}
+
+	claims, ok := token.Claims.(*Claim)
+	if !ok {
+		return &Claim{}, errs.ErrInvalidClaim
+	}
+
+	return claims, nil
+}

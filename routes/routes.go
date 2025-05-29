@@ -40,6 +40,7 @@ func InitRoutes(r *gin.Engine, DB *config.Database) {
 			auth.POST("/login", authHandl.Login)
 		}
 
+		api.Use(middlewares.Auth(authSvc))
 		// user
 		user := api.Group("/users")
 		{

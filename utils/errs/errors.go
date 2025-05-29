@@ -7,4 +7,6 @@ var (
 	ErrEmailAlreadyExist    = errors.New("email already exist")
 	ErrUsernameAlreadyExist = errors.New("username already exist")
 	ErrInvalidLogin         = errors.New("invalid login")
+	ErrInvalidToken         = errors.New("invalid token")
+	ErrInvalidClaim         = errors.New("invalid claims")
 )
