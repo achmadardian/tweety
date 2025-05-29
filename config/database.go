@@ -2,9 +2,9 @@ package config
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"time"
+	z "votes/utils/logger"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -24,12 +24,18 @@ func InitDB() *Database {
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=UTC", dbHost, dbUser, dbPass, dbName, dbPort)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatalf("failed to connect database: %s", err)
+		z.Log.Fatal().
+			Str("event", "database.connect").
+			Err(err).
+			Msg("failed to connect database")
 	}
 
 	sqlDB, err := db.DB()
 	if err != nil {
-		log.Fatalf("failed to get raw database: %s", err)
+		z.Log.Fatal().
+			Str("event", "database.get_sql").
+			Err(err).
+			Msg("failed to unwrap sql.DB from GORM")
 	}
 
 	sqlDB.SetMaxIdleConns(10)
