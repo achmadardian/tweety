@@ -66,7 +66,7 @@ func (a *AuthService) Register(req *requests.RegisterRequest) (*models.User, err
 	return register, nil
 }
 
-func (a *AuthService) GenerateToken(userId uuid.UUID, t TokenType, d TokenTTL) (string, error) {
+func (a *AuthService) generateToken(userId uuid.UUID, t TokenType, d TokenTTL) (string, error) {
 	now := time.Now()
 	exp := now.Add(time.Duration(d))
 
@@ -107,12 +107,12 @@ func (a *AuthService) Login(req *requests.LoginRequest) (string, string, error) 
 		return "", "", fmt.Errorf("compare password: %w", err)
 	}
 
-	accToken, err := a.GenerateToken(user.ID, TokenTypeAccess, AccessTokenTTL)
+	accToken, err := a.generateToken(user.ID, TokenTypeAccess, AccessTokenTTL)
 	if err != nil {
 		return "", "", err
 	}
 
-	refToken, err := a.GenerateToken(user.ID, TokenTypeRefresh, RefreshTokenTTL)
+	refToken, err := a.generateToken(user.ID, TokenTypeRefresh, RefreshTokenTTL)
 	if err != nil {
 		return "", "", err
 	}
