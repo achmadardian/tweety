@@ -8,7 +8,6 @@ import (
 	z "votes/utils/logger"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 func Auth(a *services.AuthService) gin.HandlerFunc {
@@ -42,13 +41,13 @@ func Auth(a *services.AuthService) gin.HandlerFunc {
 			return
 		}
 
-		userId, err := uuid.Parse(claim.Subject)
+		userId, err := claim.GetSubject()
 		if err != nil {
 			responses.InternalServerError(c)
 			z.Log.Error().
 				Str("event", "middleware.auth").
 				Err(err).
-				Msg("failed to parse user_id")
+				Msg("failed to claim user_id")
 			c.Abort()
 			return
 		}
