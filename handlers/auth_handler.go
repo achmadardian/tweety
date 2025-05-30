@@ -51,7 +51,7 @@ func (a *AuthHandler) Register(c *gin.Context) {
 				Str("event", "auth.register").
 				Str("username", req.Username).
 				Str("reason", errs.ErrUsernameAlreadyExist.Error()).
-				Msg("failed to register: username already exist")
+				Msg("failed to register")
 
 			responses.UnprocessableEntity(c, gin.H{"username": errs.ErrUsernameAlreadyExist.Error()})
 			return
@@ -96,7 +96,8 @@ func (a *AuthHandler) Login(c *gin.Context) {
 			z.Warn().
 				Str("event", "auth.login").
 				Str("email", req.Email).
-				Msg("failed to login: invalid credential")
+				Str("reason", errs.ErrInvalidLogin.Error()).
+				Msg("failed to login")
 
 			responses.Unauthorized(c, errs.ErrInvalidLogin.Error())
 			return
