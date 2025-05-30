@@ -32,7 +32,7 @@ func (u *UserService) Create(req *requests.RegisterRequest) (*models.User, error
 	user := &models.User{
 		ID:        uuid.New(),
 		FirstName: req.FirstName,
-		LastName:  &req.LastName,
+		LastName:  req.LastName,
 		Username:  req.Username,
 		Email:     req.Email,
 		Password:  string(hashedPass),

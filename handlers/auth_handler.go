@@ -69,7 +69,7 @@ func (a *AuthHandler) Register(c *gin.Context) {
 	res := responses.RegisterResponse{
 		ID:        register.ID,
 		FirstName: register.FirstName,
-		LastName:  *register.LastName,
+		LastName:  register.LastName,
 		Username:  register.Username,
 		Email:     register.Email,
 	}

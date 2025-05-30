@@ -48,7 +48,7 @@ func (u *UserHandler) Me(c *gin.Context) {
 	res := responses.Me{
 		Id:        user.ID,
 		FirstName: user.FirstName,
-		LastName:  *user.LastName,
+		LastName:  user.LastName,
 		Username:  user.Username,
 		Email:     user.Email,
 	}
