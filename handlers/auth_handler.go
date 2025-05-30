@@ -96,6 +96,7 @@ func (a *AuthHandler) Login(c *gin.Context) {
 			z.Warn().
 				Str("event", "auth.login").
 				Str("email", req.Email).
+				Str("reason", errs.ErrInvalidLogin.Error()).
 				Msg("failed to login: invalid credential")
 
 			responses.Unauthorized(c, errs.ErrInvalidLogin.Error())
