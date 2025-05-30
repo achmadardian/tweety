@@ -135,3 +135,27 @@ func (a *AuthService) ValidateToken(token string) (*Claim, error) {
 
 	return claims, nil
 }
+
+// return new access token
+func (a *AuthService) RefreshToken(req *requests.RefreshTokenRequest) (string, error) {
+	token, err := a.ValidateToken(req.RefreshToken)
+	if err != nil {
+		return "", errs.ErrInvalidToken
+	}
+
+	if token.TokenType != TokenTypeRefresh {
+		return "", errs.ErrInvalidToken
+	}
+
+	userId, err := uuid.Parse(token.Subject)
+	if err != nil {
+		return "", fmt.Errorf("parse user_id")
+	}
+
+	newAccToken, err := a.generateToken(userId, TokenTypeAccess, AccessTokenTTL)
+	if err != nil {
+		return "", err
+	}
+
+	return newAccToken, nil
+}

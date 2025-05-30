@@ -15,3 +15,7 @@ type LoginRequest struct {
 	Email    string `json:"email" binding:"required,email,max=240"`
 	Password string `json:"password" binding:"required,min=8"`
 }
+
+type RefreshTokenRequest struct {
+	RefreshToken string `json:"refresh_token" binding:"required"`
+}

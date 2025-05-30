@@ -38,6 +38,7 @@ func InitRoutes(r *gin.Engine, DB *config.Database) {
 		{
 			auth.POST("/register", authHandl.Register)
 			auth.POST("/login", authHandl.Login)
+			auth.POST("/refresh-token", authHandl.RefreshToken)
 		}
 
 		api.Use(middlewares.Auth(authSvc))

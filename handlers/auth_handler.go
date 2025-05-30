@@ -117,3 +117,41 @@ func (a *AuthHandler) Login(c *gin.Context) {
 
 	responses.Ok(c, res)
 }
+
+func (a *AuthHandler) RefreshToken(c *gin.Context) {
+	z := zerolog.Ctx(c.Request.Context())
+	var req requests.RefreshTokenRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		errVal := validate.ExtractValidationErrors(req, err)
+		responses.UnprocessableEntity(c, errVal)
+		return
+	}
+
+	newToken, err := a.authSvc.RefreshToken(&req)
+	if err != nil {
+		if errors.Is(err, errs.ErrInvalidToken) {
+			z.Warn().
+				Str("event", "auth.refresh_token").
+				Str("reason", errs.ErrInvalidToken.Error()).
+				Msg("failed to generate new access token")
+
+			responses.Unauthorized(c)
+			return
+		}
+
+		z.Error().
+			Str("event", "auth.refresh_token").
+			Err(err).
+			Msg("failed to generate new access token")
+
+		responses.InternalServerError(c)
+		return
+	}
+
+	res := responses.RefreshTokenResponse{
+		AccessToken: newToken,
+	}
+
+	responses.Ok(c, res)
+}
