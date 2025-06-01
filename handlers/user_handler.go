@@ -33,7 +33,8 @@ func (u *UserHandler) Me(c *gin.Context) {
 		if errors.Is(err, errs.ErrDataNotFound) {
 			z.Warn().
 				Str("user_id", userId.String()).
-				Msg("failed to fetch user by id: data not found")
+				Str("reason", "data not found").
+				Msg("failed to fetch user by id")
 
 			responses.NotFound(c)
 			return
