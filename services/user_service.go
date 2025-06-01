@@ -84,3 +84,34 @@ func (u *UserService) GetById(userId uuid.UUID) (*models.User, error) {
 
 	return user, nil
 }
+
+func (u *UserService) Update(userId uuid.UUID, req *requests.UpdateMeRequest) (*models.User, error) {
+	hashedPass, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return nil, fmt.Errorf("hash password: %w", err)
+	}
+
+	user := &models.User{
+		FirstName: req.FirstName,
+		LastName:  req.LastName,
+		Username:  req.Username,
+		Email:     req.Email,
+		Password:  string(hashedPass),
+	}
+
+	_, err = u.repo.Update(userId, user)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errs.ErrDataNotFound
+		}
+
+		return nil, fmt.Errorf("update user: %w", err)
+	}
+
+	newData, err := u.GetById(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	return newData, nil
+}

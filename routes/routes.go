@@ -46,6 +46,7 @@ func InitRoutes(r *gin.Engine, DB *config.Database) {
 		user := api.Group("/users")
 		{
 			user.GET("/me", userHandl.Me)
+			user.PATCH("/me", userHandl.UpdateMe)
 		}
 	}
 }

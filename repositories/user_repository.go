@@ -72,3 +72,16 @@ func (u *UserRepository) GetById(userId uuid.UUID) (*models.User, error) {
 
 	return &user, nil
 }
+
+func (u *UserRepository) Update(userId uuid.UUID, user *models.User) (*models.User, error) {
+	result := u.db.Where("id = ?", userId).Updates(user)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return nil, gorm.ErrRecordNotFound
+	}
+
+	return user, nil
+}
