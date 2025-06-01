@@ -16,6 +16,7 @@ type ApiResponse struct {
 const (
 	MsgSuccess             = "ok"
 	MsgCreated             = "created"
+	MsgUpdated             = "updated"
 	MsgBadRequest          = "bad request"
 	MsgNotFound            = "not found"
 	MsgUnprocessableEntity = "unprocessable entity"
@@ -45,6 +46,19 @@ func Created(c *gin.Context, data any, message ...string) {
 
 	c.JSON(http.StatusCreated, ApiResponse{
 		Code:    http.StatusCreated,
+		Message: msg,
+		Data:    data,
+	})
+}
+
+func Updated(c *gin.Context, data any, message ...string) {
+	msg := MsgUpdated
+	if len(message) > 0 {
+		msg = message[0]
+	}
+
+	c.JSON(http.StatusOK, ApiResponse{
+		Code:    http.StatusOK,
 		Message: msg,
 		Data:    data,
 	})
