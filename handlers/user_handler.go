@@ -5,9 +5,9 @@ import (
 	"votes/responses"
 	"votes/services"
 	"votes/utils/errs"
+	"votes/utils/helper"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"github.com/rs/zerolog"
 )
 
@@ -23,7 +23,10 @@ func NewUserHandler(userSvc *services.UserService) *UserHandler {
 
 func (u *UserHandler) Me(c *gin.Context) {
 	z := zerolog.Ctx(c.Request.Context())
-	userId := uuid.New() // it should be call helper to get userid from context
+	userId, ok := helper.GetUserIdFromContext(c, z, "user.me")
+	if !ok {
+		return
+	}
 
 	user, err := u.userSvc.GetById(userId)
 	if err != nil {
