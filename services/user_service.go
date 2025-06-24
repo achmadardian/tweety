@@ -3,10 +3,11 @@ package services
 import (
 	"errors"
 	"fmt"
-	"votes/models"
-	"votes/repositories"
-	"votes/requests"
-	"votes/utils/errs"
+
+	"github.com/achmadardian/tweety/models"
+	"github.com/achmadardian/tweety/repositories"
+	"github.com/achmadardian/tweety/requests"
+	"github.com/achmadardian/tweety/utils/errs"
 
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"

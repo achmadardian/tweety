@@ -1,4 +1,4 @@
-module votes
+module github.com/achmadardian/tweety
 
 go 1.23.1
 

@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"votes/responses"
+	"github.com/achmadardian/tweety/responses"
 
 	"github.com/gin-gonic/gin"
 )

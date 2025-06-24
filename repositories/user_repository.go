@@ -2,8 +2,9 @@ package repositories
 
 import (
 	"errors"
-	"votes/config"
-	"votes/models"
+
+	"github.com/achmadardian/tweety/config"
+	"github.com/achmadardian/tweety/models"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"

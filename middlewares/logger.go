@@ -1,7 +1,7 @@
 package middlewares
 
 import (
-	"votes/utils/logger"
+	"github.com/achmadardian/tweety/utils/logger"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"

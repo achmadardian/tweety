@@ -2,10 +2,11 @@ package middlewares
 
 import (
 	"strings"
-	"votes/responses"
-	"votes/services"
-	"votes/utils/errs"
-	z "votes/utils/logger"
+
+	"github.com/achmadardian/tweety/responses"
+	"github.com/achmadardian/tweety/services"
+	"github.com/achmadardian/tweety/utils/errs"
+	z "github.com/achmadardian/tweety/utils/logger"
 
 	"github.com/gin-gonic/gin"
 )

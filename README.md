@@ -1,6 +1,6 @@
-# Votes
+# Tweety
 
-A simple votes REST API
+A simple Tweety REST API
 
 ## Tech Stack
 
@@ -28,7 +28,7 @@ A simple votes REST API
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/achmadardian/votes.git
+git clone https://github.com/achmadardian/github.com/achmadardian/tweety.git
 ```
 
 ### 2. Copy environment

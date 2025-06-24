@@ -2,12 +2,13 @@ package handlers
 
 import (
 	"errors"
-	"votes/requests"
-	"votes/responses"
-	"votes/services"
-	"votes/utils/errs"
-	"votes/utils/helper"
-	"votes/utils/validate"
+
+	"github.com/achmadardian/tweety/requests"
+	"github.com/achmadardian/tweety/responses"
+	"github.com/achmadardian/tweety/services"
+	"github.com/achmadardian/tweety/utils/errs"
+	"github.com/achmadardian/tweety/utils/helper"
+	"github.com/achmadardian/tweety/utils/validate"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"

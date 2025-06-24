@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"os"
 	"time"
-	"votes/models"
-	"votes/requests"
-	"votes/utils/errs"
+
+	"github.com/achmadardian/tweety/models"
+	"github.com/achmadardian/tweety/requests"
+	"github.com/achmadardian/tweety/utils/errs"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"

@@ -2,10 +2,11 @@ package main
 
 import (
 	"log"
-	"votes/config"
-	"votes/routes"
-	"votes/utils/logger"
-	"votes/utils/validate"
+
+	"github.com/achmadardian/tweety/config"
+	"github.com/achmadardian/tweety/routes"
+	"github.com/achmadardian/tweety/utils/logger"
+	"github.com/achmadardian/tweety/utils/validate"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"

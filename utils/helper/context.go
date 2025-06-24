@@ -1,7 +1,7 @@
 package helper
 
 import (
-	"votes/responses"
+	"github.com/achmadardian/tweety/responses"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"

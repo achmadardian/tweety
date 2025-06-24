@@ -1,11 +1,11 @@
 package routes
 
 import (
-	"votes/config"
-	"votes/handlers"
-	"votes/middlewares"
-	"votes/repositories"
-	"votes/services"
+	"github.com/achmadardian/tweety/config"
+	"github.com/achmadardian/tweety/handlers"
+	"github.com/achmadardian/tweety/middlewares"
+	"github.com/achmadardian/tweety/repositories"
+	"github.com/achmadardian/tweety/services"
 
 	"github.com/gin-gonic/gin"
 )

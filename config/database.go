@@ -5,8 +5,8 @@ import (
 	"os"
 	"time"
 
-	"votes/models"
-	z "votes/utils/logger"
+	"github.com/achmadardian/tweety/models"
+	z "github.com/achmadardian/tweety/utils/logger"
 
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
