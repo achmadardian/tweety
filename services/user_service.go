@@ -23,6 +23,15 @@ func NewUserService(repo *repositories.UserRepository) *UserService {
 	}
 }
 
+type RoleType uint
+
+const (
+	RoleTypeSuperadmin RoleType = 1
+	RoleTypeAdmin      RoleType = 2
+	RoleTypeUser       RoleType = 3
+)
+
+// create regular user
 func (u *UserService) Create(req *requests.RegisterRequest) (*models.User, error) {
 	hashedPass, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
@@ -36,6 +45,7 @@ func (u *UserService) Create(req *requests.RegisterRequest) (*models.User, error
 		Username:  req.Username,
 		Email:     req.Email,
 		Password:  string(hashedPass),
+		RoleID:    uint(RoleTypeUser),
 	}
 
 	create, err := u.repo.Create(user)

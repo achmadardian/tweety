@@ -57,6 +57,10 @@ func (u *UserHandler) Me(c *gin.Context) {
 		LastName:  user.LastName,
 		Username:  user.Username,
 		Email:     user.Email,
+		Role: responses.RoleUserResponse{
+			ID:   user.Role.ID,
+			Name: user.Role.Name,
+		},
 	}
 
 	responses.Ok(c, res)
@@ -105,6 +109,10 @@ func (u *UserHandler) UpdateMe(c *gin.Context) {
 		LastName:  update.LastName,
 		Username:  update.Username,
 		Email:     update.Email,
+		Role: responses.RoleUserResponse{
+			ID:   update.Role.ID,
+			Name: update.Role.Name,
+		},
 	}
 
 	responses.Updated(c, res)
