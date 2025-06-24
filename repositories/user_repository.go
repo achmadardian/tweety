@@ -31,7 +31,9 @@ func (u *UserRepository) Create(user *models.User) (*models.User, error) {
 func (u *UserRepository) GetByEmail(email string) (*models.User, error) {
 	var user models.User
 
-	err := u.db.Select("id, first_name, last_name, username, password, email").Where("email = ?", email).First(&user).Error
+	err := u.db.Select("id, first_name, last_name, username, password, email, role_id").Preload("Role", func(db *gorm.DB) *gorm.DB {
+		return db.Select("id, name")
+	}).Where("email = ?", email).First(&user).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, gorm.ErrRecordNotFound
@@ -46,7 +48,9 @@ func (u *UserRepository) GetByEmail(email string) (*models.User, error) {
 func (u *UserRepository) GetByUsername(username string) (*models.User, error) {
 	var user models.User
 
-	err := u.db.Select("id, first_name, last_name, username, email").Where("username = ?", username).First(&user).Error
+	err := u.db.Select("id, first_name, last_name, username, email, role_id").Preload("Role", func(db *gorm.DB) *gorm.DB {
+		return db.Select("id, name")
+	}).Where("username = ?", username).First(&user).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, gorm.ErrRecordNotFound
@@ -61,7 +65,9 @@ func (u *UserRepository) GetByUsername(username string) (*models.User, error) {
 func (u *UserRepository) GetById(userId uuid.UUID) (*models.User, error) {
 	var user models.User
 
-	err := u.db.Select("id, first_name, last_name, username, email").First(&user, userId).Error
+	err := u.db.Select("id, first_name, last_name, username, email, role_id").Preload("Role", func(db *gorm.DB) *gorm.DB {
+		return db.Select("id, name")
+	}).First(&user, userId).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, gorm.ErrRecordNotFound
