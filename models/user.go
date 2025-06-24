@@ -14,7 +14,9 @@ type User struct {
 	Username  string
 	Email     string
 	Password  string
+	RoleID    uint
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt
+	Role      Role `gorm:"foreignKey:RoleID;references:ID"`
 }
