@@ -63,7 +63,12 @@ func (a *AuthService) Register(req *requests.RegisterRequest) (*models.User, err
 		return nil, fmt.Errorf("register: %w", err)
 	}
 
-	return register, nil
+	newUser, err := a.userSvc.GetById(register.ID)
+	if err != nil {
+		return nil, fmt.Errorf("fetch registered user: %w", err)
+	}
+
+	return newUser, nil
 }
 
 func (a *AuthService) generateToken(userId uuid.UUID, t TokenType, d TokenTTL) (string, error) {
