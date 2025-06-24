@@ -74,6 +74,10 @@ func (a *AuthHandler) Register(c *gin.Context) {
 		LastName:  register.LastName,
 		Username:  register.Username,
 		Email:     register.Email,
+		Role: responses.RoleUserResponse{
+			ID:   register.Role.ID,
+			Name: register.Role.Name,
+		},
 	}
 
 	responses.Created(c, res)
